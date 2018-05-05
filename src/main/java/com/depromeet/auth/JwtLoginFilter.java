@@ -15,6 +15,8 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 public class JwtLoginFilter extends AbstractAuthenticationProcessingFilter {
 	
 	public JwtLoginFilter(String url, AuthenticationManager authenticationManager) {
@@ -26,7 +28,8 @@ public class JwtLoginFilter extends AbstractAuthenticationProcessingFilter {
 	public Authentication attemptAuthentication(
 				HttpServletRequest request, HttpServletResponse response)
 			throws AuthenticationException, IOException, ServletException {
-		AccountCredentials creds = AccountCredentials.fromRequest(request);
+		AccountCredentials creds = new ObjectMapper().readValue(
+				request.getInputStream(), AccountCredentials.class);
 		return getAuthenticationManager().authenticate(
 				new UsernamePasswordAuthenticationToken(
 						creds.getUsername(),
