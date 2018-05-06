@@ -20,14 +20,16 @@ public class Member implements UserDetails {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "member_id", nullable = false)
 	private Long memberId;
 	
-	@Column(nullable = false, unique = true)
+	@Column(name = "phone", length = 15, nullable = false, unique = true)
 	private String phone;
 	
+	@Column(name = "password", length = 30)
 	private String password;
 	
-	@Column(nullable = false)
+	@Column(name = "name", length = 5, nullable = false)
 	private String name;
 	
 	@Override
