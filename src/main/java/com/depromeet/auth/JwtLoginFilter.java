@@ -26,7 +26,7 @@ public class JwtLoginFilter extends AbstractAuthenticationProcessingFilter {
 	
 	@Override
 	public Authentication attemptAuthentication(
-				HttpServletRequest request, HttpServletResponse response)
+			HttpServletRequest request, HttpServletResponse response)
 			throws AuthenticationException, IOException, ServletException {
 		AccountCredentials creds = new ObjectMapper().readValue(
 				request.getInputStream(), AccountCredentials.class);

@@ -14,6 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.depromeet.auth.JwtAuthenticationEntryPoint;
 import com.depromeet.auth.JwtAuthenticationFilter;
 import com.depromeet.auth.JwtLoginFilter;
 import com.depromeet.auth.PasswordlessAuthenticationProvider;
@@ -36,8 +37,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			.and()
 			.addFilterBefore(new JwtLoginFilter("/login", authenticationManager()),
 					UsernamePasswordAuthenticationFilter.class)
-			.addFilterBefore(new JwtAuthenticationFilter(),
-					UsernamePasswordAuthenticationFilter.class);
+			.addFilterBefore(new JwtAuthenticationFilter(authenticationManager()),
+					UsernamePasswordAuthenticationFilter.class)
+			.exceptionHandling()
+			.authenticationEntryPoint(new JwtAuthenticationEntryPoint());
 	}
 	
 	@Override

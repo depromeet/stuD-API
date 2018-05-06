@@ -29,7 +29,8 @@ public class TokenAuthenticationService {
 		response.addHeader(HEADER_STRING, TOKEN_PREFIX + " " + jwt);
 	}
 	
-	public static Authentication getAuthentication(HttpServletRequest request) {
+	public static Authentication getAuthentication(HttpServletRequest request)
+			throws RuntimeException {
 		String token = request.getHeader(HEADER_STRING);
 		if (token != null) {
 			String username = Jwts.parser()
