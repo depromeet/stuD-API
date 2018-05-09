@@ -1,6 +1,6 @@
 package com.depromeet.schedule.dto;
 
-import java.util.Set;
+import java.util.List;
 
 public class ScheduleDto {
 	
@@ -13,9 +13,10 @@ public class ScheduleDto {
 	private String description;
 	private String leader;
 	private String content;
-	private Set<String> attendMembers;
-	private Set<String> lateMembers;
-	private Set<String> notAttendMembers;
+	private List<String> attendMembers;
+	private List<String> lateMembers;
+	private List<String> notAttendMembers;
+	private List<String> guestMembers;
 	
 	public Long getScheduleId() {
 		return scheduleId;
@@ -57,27 +58,35 @@ public class ScheduleDto {
 		this.content = content;
 	}
 	
-	public Set<String> getAttendMembers() {
+	public List<String> getAttendMembers() {
 		return attendMembers;
 	}
 	
-	public void setAttendMembers(Set<String> attendMembers) {
+	public void setAttendMembers(List<String> attendMembers) {
 		this.attendMembers = attendMembers;
 	}
 	
-	public Set<String> getLateMembers() {
+	public List<String> getLateMembers() {
 		return lateMembers;
 	}
 	
-	public void setLateMembers(Set<String> lateMembers) {
+	public void setLateMembers(List<String> lateMembers) {
 		this.lateMembers = lateMembers;
 	}
 	
-	public Set<String> getNotAttendMembers() {
+	public List<String> getNotAttendMembers() {
 		return notAttendMembers;
 	}
 	
-	public void setNotAttendMembers(Set<String> notAttendMembers) {
+	public void setNotAttendMembers(List<String> notAttendMembers) {
 		this.notAttendMembers = notAttendMembers;
+	}
+	
+	public List<String> getGuestMembers() {
+		return guestMembers;
+	}
+	
+	public void setGuestMembers(List<String> guestMembers) {
+		this.guestMembers = guestMembers;
 	}
 }

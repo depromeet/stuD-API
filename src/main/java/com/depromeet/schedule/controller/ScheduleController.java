@@ -1,9 +1,7 @@
 package com.depromeet.schedule.controller;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,16 +47,21 @@ public class ScheduleController {
 		scheduleDto.setLeader(study.getLeader().getName());
 		scheduleDto.setContent(schedule.getContent());
 		
-		Set<String> attendMembers = new HashSet<>();
-		Set<String> lateMembers = new HashSet<>();
-		Set<String> notAttendMembers = new HashSet<>();
+		List<String> attendMembers = new ArrayList<>();
+		List<String> lateMembers = new ArrayList<>();
+		List<String> notAttendMembers = new ArrayList<>();
+		List<String> guestMembers = new ArrayList<>();
 		
 		for (Attendance attendance : schedule.getAttendance()) {
 			String memberName = attendance.getMember().getName();
 			
-			switch (attendance.getAttendanceCode().getCodeId().intValue()) {
+			switch (attendance.getAttendanceCode().intValue()) {
 			case ScheduleDto.ATTEND:
-				attendMembers.add(memberName);
+				if (attendance.getMember().getJoinedStudyId() == study.getStudyId()) {
+					attendMembers.add(memberName);
+				} else {
+					guestMembers.add(memberName);
+				}
 				break;
 			case ScheduleDto.LATE:
 				lateMembers.add(memberName);
@@ -74,6 +77,7 @@ public class ScheduleController {
 		scheduleDto.setAttendMembers(attendMembers);
 		scheduleDto.setLateMembers(lateMembers);
 		scheduleDto.setNotAttendMembers(notAttendMembers);
+		scheduleDto.setGuestMembers(guestMembers);
 		
 		return scheduleDto;
 	}

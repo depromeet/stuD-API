@@ -1,5 +1,6 @@
 package com.depromeet.schedule.entity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
@@ -7,7 +8,6 @@ import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import com.depromeet.common.entity.Code;
 import com.depromeet.member.entity.Member;
 import com.depromeet.schedule.dto.AttendanceId;
 
@@ -16,7 +16,7 @@ import com.depromeet.schedule.dto.AttendanceId;
 public class Attendance {
 	
 	@Id
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "member_id", nullable = false)
 	private Member member;
 	
@@ -25,13 +25,11 @@ public class Attendance {
 	@JoinColumn(name = "schedule_id", nullable = false)
 	private Schedule schedule;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "attendance_code", nullable = false)
-	private Code attendanceCode;
-	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "attendance_category", nullable = false)
-	private Code attendanceCategory;
+	@Column(name = "attendance_code", nullable = false)
+	private Long attendanceCode;
+
+	@Column(name = "attendance_category", nullable = false)
+	private Long attendanceCategory;
 
 	public Member getMember() {
 		return member;
@@ -41,19 +39,19 @@ public class Attendance {
 		this.member = member;
 	}
 
-	public Code getAttendanceCode() {
+	public Long getAttendanceCode() {
 		return attendanceCode;
 	}
 
-	public void setAttendanceCode(Code attendanceCode) {
+	public void setAttendanceCode(Long attendanceCode) {
 		this.attendanceCode = attendanceCode;
 	}
 
-	public Code getAttendanceCategory() {
+	public Long getAttendanceCategory() {
 		return attendanceCategory;
 	}
 
-	public void setAttendanceCategory(Code attendanceCategory) {
+	public void setAttendanceCategory(Long attendanceCategory) {
 		this.attendanceCategory = attendanceCategory;
 	}
 }

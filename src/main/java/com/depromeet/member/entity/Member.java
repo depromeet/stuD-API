@@ -32,6 +32,9 @@ public class Member implements UserDetails {
 	@Column(name = "name", length = 5, nullable = false)
 	private String name;
 	
+	@Column(name = "joined_study_id")
+	private Long joinedStudyId;
+	
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return null;
@@ -93,5 +96,13 @@ public class Member implements UserDetails {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+	
+	public Long getJoinedStudyId() {
+		return joinedStudyId;
+	}
+	
+	public void setJoinedStudyId(Long joinedStudyId) {
+		this.joinedStudyId = joinedStudyId;
 	}
 }

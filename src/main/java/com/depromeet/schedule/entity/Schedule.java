@@ -1,11 +1,10 @@
 package com.depromeet.schedule.entity;
 
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -21,7 +20,7 @@ public class Schedule {
 	@Column(name = "schedule_id", nullable = false)
 	private Long scheduleId;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "study_id", nullable = false)
 	private Study study;
 	
@@ -34,8 +33,8 @@ public class Schedule {
 	@Column(name = "end_at", nullable = false)
 	private Date endAt;
 	
-	@OneToMany(mappedBy = "schedule", fetch = FetchType.LAZY)
-	private Set<Attendance> attendance;
+	@OneToMany(mappedBy = "schedule")
+	private List<Attendance> attendance;
 	
 	public Long getScheduleId() {
 		return scheduleId;
@@ -77,11 +76,11 @@ public class Schedule {
 		this.endAt = endAt;
 	}
 	
-	public Set<Attendance> getAttendance() {
+	public List<Attendance> getAttendance() {
 		return attendance;
 	}
 	
-	public void setAttendance(Set<Attendance> attendance) {
+	public void setAttendance(List<Attendance> attendance) {
 		this.attendance = attendance;
 	}
 }

@@ -2,7 +2,6 @@ package com.depromeet.schedule.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -24,8 +23,8 @@ public class Study {
 
 	@Column(name = "description", length = 100, nullable = false)
 	private String description;
-	
-	@ManyToOne(fetch = FetchType.LAZY)
+
+	@ManyToOne
 	@JoinColumn(name = "leader", nullable = false)
 	private Member leader;
 	
