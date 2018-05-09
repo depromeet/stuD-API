@@ -1,21 +1,21 @@
 package com.depromeet.schedule.dto;
 
-import java.util.Date;
-
-import com.depromeet.schedule.entity.Schedule;
-import com.depromeet.schedule.entity.Subject;
+import java.util.Set;
 
 public class ScheduleDto {
 	
+	public static final int ATTEND = 1;
+	public static final int LATE = 2;
+	public static final int NOT_ATTEND = 3;
+	
 	private Long scheduleId;
-	private String title;
+	private String name;
 	private String description;
-	private String category;
+	private String leader;
 	private String content;
-	private Date startAt;
-	private Date endAt;
-	private Long createdBy;
-	private Date createdAt;
+	private Set<String> attendMembers;
+	private Set<String> lateMembers;
+	private Set<String> notAttendMembers;
 	
 	public Long getScheduleId() {
 		return scheduleId;
@@ -25,12 +25,12 @@ public class ScheduleDto {
 		this.scheduleId = scheduleId;
 	}
 	
-	public String getTitle() {
-		return title;
+	public String getName() {
+		return name;
 	}
 	
-	public void setTitle(String title) {
-		this.title = title;
+	public void setName(String name) {
+		this.name = name;
 	}
 	
 	public String getDescription() {
@@ -41,12 +41,12 @@ public class ScheduleDto {
 		this.description = description;
 	}
 	
-	public String getCategory() {
-		return category;
+	public String getLeader() {
+		return leader;
 	}
 	
-	public void setCategory(String category) {
-		this.category = category;
+	public void setLeader(String leader) {
+		this.leader = leader;
 	}
 	
 	public String getContent() {
@@ -57,52 +57,27 @@ public class ScheduleDto {
 		this.content = content;
 	}
 	
-	public Date getStartAt() {
-		return startAt;
+	public Set<String> getAttendMembers() {
+		return attendMembers;
 	}
 	
-	public void setStartAt(Date startAt) {
-		this.startAt = startAt;
+	public void setAttendMembers(Set<String> attendMembers) {
+		this.attendMembers = attendMembers;
 	}
 	
-	public Date getEndAt() {
-		return endAt;
+	public Set<String> getLateMembers() {
+		return lateMembers;
 	}
 	
-	public void setEndAt(Date endAt) {
-		this.endAt = endAt;
+	public void setLateMembers(Set<String> lateMembers) {
+		this.lateMembers = lateMembers;
 	}
 	
-	public Long getCreatedBy() {
-		return createdBy;
+	public Set<String> getNotAttendMembers() {
+		return notAttendMembers;
 	}
 	
-	public void setCreatedBy(Long createdBy) {
-		this.createdBy = createdBy;
-	}
-	
-	public Date getCreatedAt() {
-		return createdAt;
-	}
-	
-	public void setCreatedAt(Date createdAt) {
-		this.createdAt = createdAt;
-	}
-	
-	public static ScheduleDto fromSchedule(Schedule schedule) {
-		ScheduleDto scheduleDto = new ScheduleDto();
-		Subject subject = schedule.getSubject();
-		
-		scheduleDto.setScheduleId(schedule.getScheduleId());
-		scheduleDto.setTitle(subject.getTitle());
-		scheduleDto.setDescription(subject.getDescription());
-		scheduleDto.setCategory(subject.getSubjectCategory().getValue());
-		scheduleDto.setContent(schedule.getContent());
-		scheduleDto.setStartAt(schedule.getStartAt());
-		scheduleDto.setEndAt(schedule.getEndAt());
-		scheduleDto.setCreatedBy(schedule.getCreatedBy().getMemberId());
-		scheduleDto.setCreatedAt(schedule.getCreatedAt());
-		
-		return scheduleDto;
+	public void setNotAttendMembers(Set<String> notAttendMembers) {
+		this.notAttendMembers = notAttendMembers;
 	}
 }

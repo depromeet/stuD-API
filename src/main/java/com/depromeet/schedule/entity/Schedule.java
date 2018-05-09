@@ -1,6 +1,7 @@
 package com.depromeet.schedule.entity;
 
 import java.util.Date;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,8 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-
-import com.depromeet.member.entity.Member;
+import javax.persistence.OneToMany;
 
 @Entity
 public class Schedule {
@@ -22,8 +22,8 @@ public class Schedule {
 	private Long scheduleId;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "subject_id")
-	private Subject subject;
+	@JoinColumn(name = "study_id", nullable = false)
+	private Study study;
 	
 	@Column(name = "content", length = 200)
 	private String content;
@@ -34,12 +34,8 @@ public class Schedule {
 	@Column(name = "end_at", nullable = false)
 	private Date endAt;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "created_by", nullable = false)
-	private Member createdBy;
-	
-	@Column(name = "created_at", nullable = false)
-	private Date createdAt;
+	@OneToMany(mappedBy = "schedule", fetch = FetchType.LAZY)
+	private Set<Attendance> attendance;
 	
 	public Long getScheduleId() {
 		return scheduleId;
@@ -49,12 +45,12 @@ public class Schedule {
 		this.scheduleId = scheduleId;
 	}
 	
-	public Subject getSubject() {
-		return subject;
+	public Study getStudy() {
+		return study;
 	}
 	
-	public void setSubject(Subject subject) {
-		this.subject = subject;
+	public void setStudy(Study study) {
+		this.study = study;
 	}
 
 	public String getContent() {
@@ -80,20 +76,12 @@ public class Schedule {
 	public void setEndAt(Date endAt) {
 		this.endAt = endAt;
 	}
-
-	public Member getCreatedBy() {
-		return createdBy;
+	
+	public Set<Attendance> getAttendance() {
+		return attendance;
 	}
-
-	public void setCreatedBy(Member createdBy) {
-		this.createdBy = createdBy;
-	}
-
-	public Date getCreatedAt() {
-		return createdAt;
-	}
-
-	public void setCreatedAt(Date createdAt) {
-		this.createdAt = createdAt;
+	
+	public void setAttendance(Set<Attendance> attendance) {
+		this.attendance = attendance;
 	}
 }
