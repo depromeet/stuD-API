@@ -9,7 +9,5 @@ import com.depromeet.schedule.entity.Schedule;
 
 public interface ScheduleRepository extends CrudRepository<Schedule, Long> {
 	
-	List<Schedule> findByStartAtBetweenOrEndAtBetween(
-			Date startAtStartDate, Date startAtEndDate,
-			Date endAtStartDate, Date endAtEndDate);
+	List<Schedule> findByStartAtBetween(Date startAtStartDate, Date startAtEndDate);
 }

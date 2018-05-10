@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.depromeet.member.entity.Member;
 import com.depromeet.member.repository.MemberRepository;
 
 @Service
@@ -24,5 +25,9 @@ public class MemberService implements UserDetailsService {
 		}
 		
 		return userDetails;
+	}
+	
+	public Member loadMemberByPhone(String phone) {
+		return memberRepository.findByPhone(phone);
 	}
 }

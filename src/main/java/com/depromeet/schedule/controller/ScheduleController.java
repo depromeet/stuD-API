@@ -2,17 +2,28 @@ package com.depromeet.schedule.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.depromeet.common.dto.ApiError;
 import com.depromeet.common.dto.ApiResponse;
+import com.depromeet.common.exception.NoSuchDataException;
+import com.depromeet.member.entity.Member;
+import com.depromeet.member.service.MemberService;
+import com.depromeet.schedule.dto.AttendanceDto;
 import com.depromeet.schedule.dto.ScheduleDto;
-import com.depromeet.schedule.entity.Attendance;
 import com.depromeet.schedule.entity.Schedule;
 import com.depromeet.schedule.entity.Study;
 import com.depromeet.schedule.service.ScheduleService;
@@ -22,19 +33,46 @@ import com.depromeet.schedule.service.ScheduleService;
 public class ScheduleController {
 	
 	@Autowired
+	private MemberService memberService;
+	
+	@Autowired
 	private ScheduleService scheduleService;
 	
 	@GetMapping
-	public ApiResponse<List<ScheduleDto>> getSchedule(
+	@ResponseStatus(HttpStatus.OK)
+	public ApiResponse<List<ScheduleDto>> loadSchedule(
 			@RequestParam int year, @RequestParam int month, @RequestParam int week) {
-		List<Schedule> scheduleList = scheduleService.getScheduleByDate(year, month, week);
 		
-		List<ScheduleDto> scheduleDtoList = new ArrayList<>();
-		scheduleList.stream()
-				.map(schedule -> scheduleDtoList.add(scheduleDtoFromEntity(schedule)))
+		List<Schedule> scheduleList = 
+				scheduleService.getSchedulesByDate(year, month, week);
+		
+		List<ScheduleDto> scheduleDtoList = scheduleList.stream()
+				.map(schedule -> scheduleDtoFromEntity(schedule))
 				.collect(Collectors.toList());
 		
 		return new ApiResponse<>(scheduleDtoList);
+	}
+	
+	@PostMapping("/{scheduleId}/attendance")
+	@ResponseStatus(HttpStatus.OK)
+	public ApiResponse<Object> setAttendance(@PathVariable Long scheduleId,
+			@RequestBody AttendanceDto attendanceDto) {
+		
+		String phone = SecurityContextHolder.getContext()
+				.getAuthentication()
+				.getName();
+		Member member = memberService.loadMemberByPhone(phone);
+		Optional.ofNullable(member)
+				.orElseThrow(() -> new NoSuchDataException("회원 정보가 유효하지 않습니다."));
+		
+		try {
+			scheduleService.setAttendance(member.getMemberId(), scheduleId,
+					attendanceDto.getAttendanceCode());
+		} catch (RuntimeException e) {
+			return new ApiResponse<>(new ApiError(e.getMessage()));
+		}
+		
+		return null;
 	}
 	
 	private ScheduleDto scheduleDtoFromEntity(Schedule schedule) {
@@ -52,27 +90,28 @@ public class ScheduleController {
 		List<String> notAttendMembers = new ArrayList<>();
 		List<String> guestMembers = new ArrayList<>();
 		
-		for (Attendance attendance : schedule.getAttendance()) {
-			String memberName = attendance.getMember().getName();
-			
-			switch (attendance.getAttendanceCode().intValue()) {
-			case ScheduleDto.ATTEND:
-				if (attendance.getMember().getJoinedStudyId() == study.getStudyId()) {
-					attendMembers.add(memberName);
-				} else {
-					guestMembers.add(memberName);
-				}
-				break;
-			case ScheduleDto.LATE:
-				lateMembers.add(memberName);
-				break;
-			case ScheduleDto.NOT_ATTEND:
-				notAttendMembers.add(memberName);
-				break;
-			default:
-				break;
-			}
-		}
+		schedule.getAttendance().stream()
+				.forEach(a -> {
+					String memberName = a.getMember().getName();
+					
+					switch (a.getAttendanceCode().intValue()) {
+					case ScheduleDto.ATTEND:
+						if (a.getMember().getJoinedStudyId() == study.getStudyId()) {
+							attendMembers.add(memberName);
+						} else {
+							guestMembers.add(memberName);
+						}
+						break;
+					case ScheduleDto.LATE:
+						lateMembers.add(memberName);
+						break;
+					case ScheduleDto.NOT_ATTEND:
+						notAttendMembers.add(memberName);
+						break;
+					default:
+						break;
+					}
+				});
 		
 		scheduleDto.setAttendMembers(attendMembers);
 		scheduleDto.setLateMembers(lateMembers);

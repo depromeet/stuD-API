@@ -27,9 +27,15 @@ public class Attendance {
 	
 	@Column(name = "attendance_code", nullable = false)
 	private Long attendanceCode;
-
-	@Column(name = "attendance_category", nullable = false)
-	private Long attendanceCategory;
+	
+	public Attendance() {
+	}
+	
+	public Attendance(Member member, Schedule schedule, Long attendanceCode) {
+		setMember(member);
+		setSchedule(schedule);
+		setAttendanceCode(attendanceCode);
+	}
 
 	public Member getMember() {
 		return member;
@@ -38,6 +44,14 @@ public class Attendance {
 	public void setMember(Member member) {
 		this.member = member;
 	}
+	
+	public Schedule getSchedule() {
+		return schedule;
+	}
+	
+	public void setSchedule(Schedule schedule) {
+		this.schedule = schedule;
+	}
 
 	public Long getAttendanceCode() {
 		return attendanceCode;
@@ -45,13 +59,5 @@ public class Attendance {
 
 	public void setAttendanceCode(Long attendanceCode) {
 		this.attendanceCode = attendanceCode;
-	}
-
-	public Long getAttendanceCategory() {
-		return attendanceCategory;
-	}
-
-	public void setAttendanceCategory(Long attendanceCategory) {
-		this.attendanceCategory = attendanceCategory;
 	}
 }

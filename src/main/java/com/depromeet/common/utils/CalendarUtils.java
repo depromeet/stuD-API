@@ -18,6 +18,27 @@ public class CalendarUtils {
 		return cal.getTime();
 	}
 	
+	public static int getYear(Date date) {
+		Calendar cal = calendarInstance();
+		cal.setTime(date);
+		
+		return cal.get(Calendar.YEAR);
+	}
+	
+	public static int getMonth(Date date) {
+		Calendar cal = calendarInstance();
+		cal.setTime(date);
+		
+		return cal.get(Calendar.MONTH) + 1;
+	}
+	
+	public static int getWeek(Date date) {
+		Calendar cal = calendarInstance();
+		cal.setTime(date);
+		
+		return cal.get(Calendar.WEEK_OF_MONTH);
+	}
+	
 	private static Calendar calendarInstance() {
 		Calendar cal = Calendar.getInstance();
 		cal.setFirstDayOfWeek(Calendar.MONDAY);
