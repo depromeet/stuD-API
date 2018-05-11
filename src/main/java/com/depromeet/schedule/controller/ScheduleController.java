@@ -3,12 +3,10 @@ package com.depromeet.schedule.controller;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -58,11 +56,7 @@ public class ScheduleController {
 	public ApiResponse<Object> setAttendance(@PathVariable Long scheduleId,
 			@RequestBody AttendanceDto attendanceDto) {
 		
-		String phone = SecurityContextHolder.getContext()
-				.getAuthentication()
-				.getName();
-		Member member = memberService.loadMemberByPhone(phone);
-		Optional.ofNullable(member)
+		Member member = memberService.loadMemberByToken()
 				.orElseThrow(() -> new NoSuchElementException("회원 정보가 유효하지 않습니다."));
 		
 		try {
