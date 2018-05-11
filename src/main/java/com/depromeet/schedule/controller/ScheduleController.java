@@ -29,7 +29,7 @@ import com.depromeet.schedule.entity.Study;
 import com.depromeet.schedule.service.ScheduleService;
 
 @RestController
-@RequestMapping("/schedule")
+@RequestMapping("/schedules")
 public class ScheduleController {
 	
 	@Autowired
