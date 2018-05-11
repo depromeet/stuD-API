@@ -37,7 +37,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			.authorizeRequests()
 			.antMatchers("/").permitAll()
 			.antMatchers(HttpMethod.POST, "/login").permitAll()
-			.antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 			.anyRequest().authenticated()
 			.and()
 			.addFilterBefore(new JwtLoginFilter("/login", authenticationManager()),
@@ -56,6 +55,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
+        configuration.addAllowedMethod("*");
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
