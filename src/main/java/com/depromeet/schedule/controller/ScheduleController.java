@@ -54,12 +54,14 @@ public class ScheduleController {
 	
 	@GetMapping("{scheduleId}/attendance")
 	@ResponseStatus(HttpStatus.OK)
-	public List<AttendanceDto> loadAttendance(@PathVariable Long scheduleId,
+	public ApiResponse<List<AttendanceDto>> loadAttendance(@PathVariable Long scheduleId,
 			@RequestParam int year, @RequestParam int month, @RequestParam int week) {
 		
-		return scheduleService.loadAttendanceByScheduleId(scheduleId).stream()
+		List<AttendanceDto> attendances = scheduleService.loadAttendanceByScheduleId(scheduleId).stream()
 				.map(attendance -> attendanceDtoFromEntity(attendance))
 				.collect(Collectors.toList());
+		
+		return new ApiResponse<>(attendances);
 	}
 	
 	@PostMapping("/{scheduleId}/attendance")
