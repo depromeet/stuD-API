@@ -28,7 +28,7 @@ public class ScheduleService {
 	
 	@Autowired MemberRepository memberRepository;
 	
-	public List<Schedule> getSchedulesByDate(int year, int month, int week) {
+	public List<Schedule> loadSchedulesByDate(int year, int month, int week) {
 		Date startDate = CalendarUtils.getFirstDayOfWeek(year, month, week);
 		Date endDate = CalendarUtils.getFirstDayOfWeek(year, month, week + 1);
 		
@@ -49,7 +49,7 @@ public class ScheduleService {
 		}
 		
 		List<Schedule> schedules =
-				this.getScheduleListStartAtSameWeek(schedule);
+				this.loadSchedulesStartAtSameWeek(schedule);
 		
 		List<Attendance> attendances = attendanceRepository.findByScheduleScheduleIdIn(
 				schedules.stream()
@@ -64,13 +64,17 @@ public class ScheduleService {
 		attendanceRepository.save(attendance);
 	}
 	
-	public List<Schedule> getScheduleListStartAtSameWeek(Schedule schedule) {
+	public List<Attendance> loadAttendanceByScheduleId(Long scheduleId) {
+		return attendanceRepository.findByScheduleScheduleId(scheduleId);
+	}
+	
+	private List<Schedule> loadSchedulesStartAtSameWeek(Schedule schedule) {
 		Date startAt = schedule.getStartAt();
 		
 		int year = CalendarUtils.getYear(startAt);
 		int month = CalendarUtils.getMonth(startAt);
 		int week = CalendarUtils.getWeek(startAt);
 		
-		return getSchedulesByDate(year, month, week);
+		return loadSchedulesByDate(year, month, week);
 	}
 }

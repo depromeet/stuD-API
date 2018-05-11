@@ -22,6 +22,7 @@ import com.depromeet.member.entity.Member;
 import com.depromeet.member.service.MemberService;
 import com.depromeet.schedule.dto.AttendanceDto;
 import com.depromeet.schedule.dto.ScheduleDto;
+import com.depromeet.schedule.entity.Attendance;
 import com.depromeet.schedule.entity.Schedule;
 import com.depromeet.schedule.entity.Study;
 import com.depromeet.schedule.service.ScheduleService;
@@ -42,13 +43,23 @@ public class ScheduleController {
 			@RequestParam int year, @RequestParam int month, @RequestParam int week) {
 		
 		List<Schedule> scheduleList = 
-				scheduleService.getSchedulesByDate(year, month, week);
+				scheduleService.loadSchedulesByDate(year, month, week);
 		
 		List<ScheduleDto> scheduleDtoList = scheduleList.stream()
 				.map(schedule -> scheduleDtoFromEntity(schedule))
 				.collect(Collectors.toList());
 		
 		return new ApiResponse<>(scheduleDtoList);
+	}
+	
+	@GetMapping("{scheduleId}/attendance")
+	@ResponseStatus(HttpStatus.OK)
+	public List<AttendanceDto> loadAttendance(@PathVariable Long scheduleId,
+			@RequestParam int year, @RequestParam int month, @RequestParam int week) {
+		
+		return scheduleService.loadAttendanceByScheduleId(scheduleId).stream()
+				.map(attendance -> attendanceDtoFromEntity(attendance))
+				.collect(Collectors.toList());
 	}
 	
 	@PostMapping("/{scheduleId}/attendance")
@@ -113,5 +124,18 @@ public class ScheduleController {
 		scheduleDto.setGuestMembers(guestMembers);
 		
 		return scheduleDto;
+	}
+	
+	private AttendanceDto attendanceDtoFromEntity(Attendance attendance) {
+		AttendanceDto attendanceDto = new AttendanceDto();
+		Member member = attendance.getMember();
+		
+		attendanceDto.setMemberId(member.getMemberId());
+		attendanceDto.setMemberName(member.getName());
+		attendanceDto.setAttendanceCode(attendance.getAttendanceCode());
+		attendanceDto.setIsGuest(member.getJoinedStudyId() !=
+				attendance.getSchedule().getStudy().getStudyId());
+		
+		return attendanceDto;
 	}
 }
