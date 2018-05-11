@@ -22,6 +22,7 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
 	protected void doFilterInternal(HttpServletRequest request,
 			HttpServletResponse response, FilterChain chain)
 			throws IOException, ServletException, RuntimeException {
+		
 		Authentication authentication = TokenAuthenticationService.
 				getAuthentication((HttpServletRequest) request);
 		

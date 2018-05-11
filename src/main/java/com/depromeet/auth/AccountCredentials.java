@@ -2,6 +2,9 @@ package com.depromeet.auth;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class AccountCredentials {
 	
 	private String username;

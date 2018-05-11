@@ -1,6 +1,10 @@
 package com.depromeet.member.service;
 
+import java.util.NoSuchElementException;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -27,7 +31,25 @@ public class MemberService implements UserDetailsService {
 		return userDetails;
 	}
 	
-	public Member loadMemberByPhone(String phone) {
-		return memberRepository.findByPhone(phone);
+	public Optional<Member> loadMemberByToken() {
+		String phone = SecurityContextHolder.getContext()
+				.getAuthentication()
+				.getName();
+		
+		return Optional.ofNullable(memberRepository.findByPhone(phone));
+	}
+	
+	public Optional<Member> loadMemberByPhone(String phone) {
+		return Optional.ofNullable(memberRepository.findByPhone(phone));
+	}
+	
+	public void updateJoinedStudy(Long memberId, Long studyId) {
+		Member member = memberRepository.findById(memberId)
+				.orElseThrow(() -> new NoSuchElementException("회원 정보가 유효하지 않습니다."));
+		
+		if (member.getJoinedStudyId() != studyId) {
+			member.setJoinedStudyId(studyId);
+			memberRepository.save(member);
+		}
 	}
 }
