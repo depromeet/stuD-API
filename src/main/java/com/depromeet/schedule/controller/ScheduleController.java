@@ -2,6 +2,7 @@ package com.depromeet.schedule.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -19,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.depromeet.common.dto.ApiError;
 import com.depromeet.common.dto.ApiResponse;
-import com.depromeet.common.exception.NoSuchDataException;
 import com.depromeet.member.entity.Member;
 import com.depromeet.member.service.MemberService;
 import com.depromeet.schedule.dto.AttendanceDto;
@@ -63,7 +63,7 @@ public class ScheduleController {
 				.getName();
 		Member member = memberService.loadMemberByPhone(phone);
 		Optional.ofNullable(member)
-				.orElseThrow(() -> new NoSuchDataException("회원 정보가 유효하지 않습니다."));
+				.orElseThrow(() -> new NoSuchElementException("회원 정보가 유효하지 않습니다."));
 		
 		try {
 			scheduleService.setAttendance(member.getMemberId(), scheduleId,

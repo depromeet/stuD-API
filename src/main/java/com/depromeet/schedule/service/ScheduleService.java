@@ -2,13 +2,13 @@ package com.depromeet.schedule.service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
-import com.depromeet.common.exception.NoSuchDataException;
 import com.depromeet.common.utils.CalendarUtils;
 import com.depromeet.member.entity.Member;
 import com.depromeet.member.repository.MemberRepository;
@@ -39,10 +39,10 @@ public class ScheduleService {
 			throws AccessDeniedException {
 		
 		Schedule schedule = scheduleRepository.findById(scheduleId)
-				.orElseThrow(() -> new NoSuchDataException("해당 스터디가 존재하지 않습니다."));
+				.orElseThrow(() -> new NoSuchElementException("해당 스터디가 존재하지 않습니다."));
 		
 		Member member = memberRepository.findById(memberId)
-				.orElseThrow(() -> new NoSuchDataException("회원 정보가 유효하지 않습니다."));
+				.orElseThrow(() -> new NoSuchElementException("회원 정보가 유효하지 않습니다."));
 		
 		if (schedule.getDecidedAttendance()) {
 			throw new AccessDeniedException("이미 확정된 출석입니다.");
