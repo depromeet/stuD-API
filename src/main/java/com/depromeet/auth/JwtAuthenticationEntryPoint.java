@@ -11,8 +11,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 
-import com.depromeet.common.dto.ApiError;
-import com.depromeet.common.dto.ApiResponse;
+import com.depromeet.common.dto.ApiErrorResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
@@ -27,10 +26,9 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 			logger.debug("Pre-authenticated entry point called. Rejecting access");
 		}
 		
-		ApiResponse<Object> apiResponse = new ApiResponse<>(
-				new ApiError(ApiError.CODE_UNAUTHORIZED, "로그인이 필요합니다."));
+		ApiErrorResponse errorResponse = new ApiErrorResponse("로그인이 필요합니다.");
 		
-		new ObjectMapper().writeValue(response.getOutputStream(), apiResponse);
+		new ObjectMapper().writeValue(response.getOutputStream(), errorResponse);
 		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 	}
 }
