@@ -13,6 +13,7 @@ public class ScheduleDto {
 	private String description;
 	private String leader;
 	private String content;
+	private Boolean decidedAttendance;
 	private List<String> attendMembers;
 	private List<String> lateMembers;
 	private List<String> notAttendMembers;
@@ -56,6 +57,14 @@ public class ScheduleDto {
 	
 	public void setContent(String content) {
 		this.content = content;
+	}
+	
+	public Boolean getDecidedAttendance() {
+		return decidedAttendance;
+	}
+	
+	public void setDecidedAttendance(Boolean decidedAttendance) {
+		this.decidedAttendance = decidedAttendance;
 	}
 	
 	public List<String> getAttendMembers() {

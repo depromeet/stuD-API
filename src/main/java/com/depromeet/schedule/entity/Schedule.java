@@ -33,6 +33,9 @@ public class Schedule {
 	@Column(name = "end_at", nullable = false)
 	private Date endAt;
 	
+	@Column(name = "decided_attendance", nullable = false)
+	private Boolean decidedAttendance;
+	
 	@OneToMany(mappedBy = "schedule")
 	private List<Attendance> attendance;
 	
@@ -74,6 +77,14 @@ public class Schedule {
 
 	public void setEndAt(Date endAt) {
 		this.endAt = endAt;
+	}
+	
+	public Boolean getDecidedAttendance() {
+		return decidedAttendance;
+	}
+	
+	public void setDecidedAttendance(Boolean decidedAttendance) {
+		this.decidedAttendance = decidedAttendance;
 	}
 	
 	public List<Attendance> getAttendance() {
