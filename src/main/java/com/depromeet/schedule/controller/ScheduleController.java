@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.depromeet.common.dto.ApiError;
 import com.depromeet.common.dto.ApiResponse;
 import com.depromeet.member.entity.Member;
 import com.depromeet.member.service.MemberService;
@@ -49,7 +48,7 @@ public class ScheduleController {
 				.map(schedule -> scheduleDtoFromEntity(schedule))
 				.collect(Collectors.toList());
 		
-		return new ApiResponse<>(scheduleDtoList);
+		return new ApiResponse<>(scheduleDtoList, memberService.isLeader());
 	}
 	
 	@GetMapping("{scheduleId}/attendance")
@@ -61,7 +60,7 @@ public class ScheduleController {
 				.map(attendance -> attendanceDtoFromEntity(attendance))
 				.collect(Collectors.toList());
 		
-		return new ApiResponse<>(attendances);
+		return new ApiResponse<>(attendances, memberService.isLeader());
 	}
 	
 	@PostMapping("/{scheduleId}/attendance")
@@ -72,14 +71,10 @@ public class ScheduleController {
 		Member member = memberService.loadMemberByToken()
 				.orElseThrow(() -> new NoSuchElementException("회원 정보가 유효하지 않습니다."));
 		
-		try {
-			scheduleService.setAttendance(member.getMemberId(), scheduleId,
-					attendanceDto.getAttendanceCode());
-		} catch (RuntimeException e) {
-			return new ApiResponse<>(new ApiError(e.getMessage()));
-		}
+		scheduleService.setAttendance(member.getMemberId(), scheduleId,
+				attendanceDto.getAttendanceCode());
 		
-		return null;
+		return new ApiResponse<>(memberService.isLeader());
 	}
 	
 	private ScheduleDto scheduleDtoFromEntity(Schedule schedule) {

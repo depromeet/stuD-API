@@ -1,13 +1,9 @@
 package com.depromeet.common.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-
-@JsonInclude(Include.NON_NULL)
 public class ApiResponse<T> {
 	
 	private T data;
-	private ApiError error;
+	private Boolean isLeader;
 	
 	public ApiResponse() {
 	}
@@ -16,8 +12,13 @@ public class ApiResponse<T> {
 		setData(data);
 	}
 	
-	public ApiResponse(ApiError error) {
-		setError(error);
+	public ApiResponse(Boolean isLeader) {
+		setIsLeader(isLeader);
+	}
+	
+	public ApiResponse(T data, Boolean isLeader) {
+		setData(data);
+		setIsLeader(isLeader);
 	}
 	
 	public T getData() {
@@ -28,11 +29,11 @@ public class ApiResponse<T> {
 		this.data = data;
 	}
 	
-	public ApiError getError() {
-		return error;
+	public Boolean getIsLeader() {
+		return isLeader;
 	}
 	
-	public void setError(ApiError error) {
-		this.error = error;
+	public void setIsLeader(Boolean isLeader) {
+		this.isLeader = isLeader;
 	}
 }

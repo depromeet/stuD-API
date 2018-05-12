@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.depromeet.common.dto.ApiResponse;
 import com.depromeet.member.entity.Member;
 import com.depromeet.member.service.MemberService;
 
@@ -22,10 +23,12 @@ public class StudyController {
 	
 	@PostMapping("/{studyId}/join")
 	@ResponseStatus(HttpStatus.OK)
-	public void joinStudy(@PathVariable Long studyId) {
+	public ApiResponse<Object> joinStudy(@PathVariable Long studyId) {
 		Member member = memberService.loadMemberByToken()
 				.orElseThrow(() -> new NoSuchElementException("회원 정보가 유효하지 않습니다."));
 		
 		memberService.updateJoinedStudy(member.getMemberId(), studyId);
+		
+		return new ApiResponse<>(memberService.isLeader());
 	}
 }
