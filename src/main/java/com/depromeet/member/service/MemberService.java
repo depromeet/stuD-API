@@ -12,16 +12,12 @@ import org.springframework.stereotype.Service;
 
 import com.depromeet.member.entity.Member;
 import com.depromeet.member.repository.MemberRepository;
-import com.depromeet.study.repository.StudyRepository;
 
 @Service
 public class MemberService implements UserDetailsService {
 	
 	@Autowired
 	private MemberRepository memberRepository;
-	
-	@Autowired
-	private StudyRepository studyRepository;
 	
 	@Override
 	public UserDetails loadUserByUsername(String username)
@@ -55,12 +51,5 @@ public class MemberService implements UserDetailsService {
 			member.setJoinedStudyId(studyId);
 			memberRepository.save(member);
 		}
-	}
-	
-	public Boolean isLeader() {
-		Member member = loadMemberByToken()
-				.orElseThrow(() -> new NoSuchElementException("회원 정보가 유효하지 않습니다."));
-		
-		return !(studyRepository.findByLeaderMemberId(member.getMemberId()).isEmpty());
 	}
 }

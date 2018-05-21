@@ -38,34 +38,38 @@ public class ScheduleController {
 	
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
-	public ApiResponse<List<ScheduleDto>> loadSchedule(
+	public ApiResponse<List<ScheduleDto>> loadSchedules(
 			@RequestParam int year, @RequestParam int month, @RequestParam int week) {
 		
 		List<Schedule> scheduleList = 
 				scheduleService.loadSchedulesByDate(year, month, week);
 		
+		Member member = memberService.loadMemberByToken()
+				.orElseThrow(() -> new NoSuchElementException("회원 정보가 유효하지 않습니다."));
+		
 		List<ScheduleDto> scheduleDtoList = scheduleList.stream()
-				.map(schedule -> scheduleDtoFromEntity(schedule))
+				.map(schedule -> scheduleDtoFromEntity(schedule, member))
 				.collect(Collectors.toList());
 		
-		return new ApiResponse<>(scheduleDtoList, memberService.isLeader());
+		return new ApiResponse<>(scheduleDtoList);
 	}
 	
-	@GetMapping("{scheduleId}/attendance")
+	@GetMapping("/{scheduleId}/attendance")
 	@ResponseStatus(HttpStatus.OK)
 	public ApiResponse<List<AttendanceDto>> loadAttendance(@PathVariable Long scheduleId,
 			@RequestParam int year, @RequestParam int month, @RequestParam int week) {
 		
-		List<AttendanceDto> attendances = scheduleService.loadAttendanceByScheduleId(scheduleId).stream()
+		List<AttendanceDto> attendances =
+				scheduleService.loadAttendanceByScheduleId(scheduleId).stream()
 				.map(attendance -> attendanceDtoFromEntity(attendance))
 				.collect(Collectors.toList());
 		
-		return new ApiResponse<>(attendances, memberService.isLeader());
+		return new ApiResponse<>(attendances);
 	}
 	
 	@PostMapping("/{scheduleId}/attendance")
 	@ResponseStatus(HttpStatus.OK)
-	public ApiResponse<Object> setAttendance(@PathVariable Long scheduleId,
+	public void setAttendance(@PathVariable Long scheduleId,
 			@RequestBody AttendanceDto attendanceDto) {
 		
 		Member member = memberService.loadMemberByToken()
@@ -73,11 +77,9 @@ public class ScheduleController {
 		
 		scheduleService.setAttendance(member.getMemberId(), scheduleId,
 				attendanceDto.getAttendanceCode());
-		
-		return new ApiResponse<>(memberService.isLeader());
 	}
 	
-	private ScheduleDto scheduleDtoFromEntity(Schedule schedule) {
+	private ScheduleDto scheduleDtoFromEntity(Schedule schedule, Member member) {
 		ScheduleDto scheduleDto = new ScheduleDto();
 		Study study = schedule.getStudy();
 		
@@ -119,6 +121,7 @@ public class ScheduleController {
 		scheduleDto.setLateMembers(lateMembers);
 		scheduleDto.setNotAttendMembers(notAttendMembers);
 		scheduleDto.setGuestMembers(guestMembers);
+		scheduleDto.setIsLeader(member.getMemberId() == study.getLeader().getMemberId());
 		
 		return scheduleDto;
 	}
