@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.depromeet.common.dto.ApiError;
 import com.depromeet.common.dto.ApiResponse;
 import com.depromeet.member.entity.Member;
 import com.depromeet.member.service.MemberService;
@@ -39,25 +38,29 @@ public class ScheduleController {
 	
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
-	public ApiResponse<List<ScheduleDto>> loadSchedule(
+	public ApiResponse<List<ScheduleDto>> loadSchedules(
 			@RequestParam int year, @RequestParam int month, @RequestParam int week) {
 		
 		List<Schedule> scheduleList = 
 				scheduleService.loadSchedulesByDate(year, month, week);
 		
+		Member member = memberService.loadMemberByToken()
+				.orElseThrow(() -> new NoSuchElementException("회원 정보가 유효하지 않습니다."));
+		
 		List<ScheduleDto> scheduleDtoList = scheduleList.stream()
-				.map(schedule -> scheduleDtoFromEntity(schedule))
+				.map(schedule -> scheduleDtoFromEntity(schedule, member))
 				.collect(Collectors.toList());
 		
 		return new ApiResponse<>(scheduleDtoList);
 	}
 	
-	@GetMapping("{scheduleId}/attendance")
+	@GetMapping("/{scheduleId}/attendance")
 	@ResponseStatus(HttpStatus.OK)
 	public ApiResponse<List<AttendanceDto>> loadAttendance(@PathVariable Long scheduleId,
 			@RequestParam int year, @RequestParam int month, @RequestParam int week) {
 		
-		List<AttendanceDto> attendances = scheduleService.loadAttendanceByScheduleId(scheduleId).stream()
+		List<AttendanceDto> attendances =
+				scheduleService.loadAttendanceByScheduleId(scheduleId).stream()
 				.map(attendance -> attendanceDtoFromEntity(attendance))
 				.collect(Collectors.toList());
 		
@@ -66,23 +69,17 @@ public class ScheduleController {
 	
 	@PostMapping("/{scheduleId}/attendance")
 	@ResponseStatus(HttpStatus.OK)
-	public ApiResponse<Object> setAttendance(@PathVariable Long scheduleId,
+	public void setAttendance(@PathVariable Long scheduleId,
 			@RequestBody AttendanceDto attendanceDto) {
 		
 		Member member = memberService.loadMemberByToken()
 				.orElseThrow(() -> new NoSuchElementException("회원 정보가 유효하지 않습니다."));
 		
-		try {
-			scheduleService.setAttendance(member.getMemberId(), scheduleId,
-					attendanceDto.getAttendanceCode());
-		} catch (RuntimeException e) {
-			return new ApiResponse<>(new ApiError(e.getMessage()));
-		}
-		
-		return null;
+		scheduleService.setAttendance(member.getMemberId(), scheduleId,
+				attendanceDto.getAttendanceCode());
 	}
 	
-	private ScheduleDto scheduleDtoFromEntity(Schedule schedule) {
+	private ScheduleDto scheduleDtoFromEntity(Schedule schedule, Member member) {
 		ScheduleDto scheduleDto = new ScheduleDto();
 		Study study = schedule.getStudy();
 		
@@ -124,6 +121,7 @@ public class ScheduleController {
 		scheduleDto.setLateMembers(lateMembers);
 		scheduleDto.setNotAttendMembers(notAttendMembers);
 		scheduleDto.setGuestMembers(guestMembers);
+		scheduleDto.setIsLeader(member.getMemberId() == study.getLeader().getMemberId());
 		
 		return scheduleDto;
 	}

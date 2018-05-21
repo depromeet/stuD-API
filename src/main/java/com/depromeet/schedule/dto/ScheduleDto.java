@@ -18,6 +18,7 @@ public class ScheduleDto {
 	private List<String> lateMembers;
 	private List<String> notAttendMembers;
 	private List<String> guestMembers;
+	private Boolean isLeader;
 	
 	public Long getScheduleId() {
 		return scheduleId;
@@ -97,5 +98,13 @@ public class ScheduleDto {
 	
 	public void setGuestMembers(List<String> guestMembers) {
 		this.guestMembers = guestMembers;
+	}
+	
+	public Boolean isLeader() {
+		return isLeader;
+	}
+	
+	public void setIsLeader(Boolean isLeader) {
+		this.isLeader = isLeader;
 	}
 }
