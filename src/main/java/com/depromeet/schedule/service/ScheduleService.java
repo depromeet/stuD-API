@@ -64,6 +64,10 @@ public class ScheduleService {
 		attendanceRepository.save(attendance);
 	}
 	
+	public List<Attendance> loadSchedulesByMemberId(Long memberId) {
+		return attendanceRepository.findByMemberMemberId(memberId);
+	}
+	
 	public List<Attendance> loadAttendanceByScheduleId(Long scheduleId) {
 		return attendanceRepository.findByScheduleScheduleId(scheduleId);
 	}

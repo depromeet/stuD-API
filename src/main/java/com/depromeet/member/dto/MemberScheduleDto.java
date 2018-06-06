@@ -1,13 +1,13 @@
 package com.depromeet.member.dto;
 
-import java.sql.Date;
+import java.util.Date;
 
 public class MemberScheduleDto {
 	
 	private String name;
 	private Date startAt;
-	private Boolean attended;
-	private Boolean guest;
+	private Long attendanceCode;
+	private Boolean isGuest;
 
 	public String getName() {
 		return name;
@@ -25,19 +25,19 @@ public class MemberScheduleDto {
 		this.startAt = startAt;
 	}
 	
-	public Boolean isAttended() {
-		return attended;
+	public Long getAttendanceCode() {
+		return attendanceCode;
 	}
 	
-	public void setAttended(Boolean attended) {
-		this.attended = attended;
+	public void setAttendanceCode(Long attendanceCode) {
+		this.attendanceCode = attendanceCode;
 	}
-
-	public Boolean isGuest() {
-		return guest;
+	
+	public Boolean getIsGuest() {
+		return isGuest;
 	}
-
-	public void setGuest(Boolean guest) {
-		this.guest = guest;
+	
+	public void setIsGuest(Boolean isGuest) {
+		this.isGuest = isGuest;
 	}
 }

@@ -11,10 +11,6 @@ public class ApiResponse<T> {
 		setData(data);
 	}
 	
-	public ApiResponse(T data, Boolean isLeader) {
-		setData(data);
-	}
-	
 	public T getData() {
 		return data;
 	}
