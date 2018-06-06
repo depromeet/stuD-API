@@ -100,7 +100,8 @@ public class ScheduleController {
 					
 					switch (a.getAttendanceCode().intValue()) {
 					case ScheduleDto.ATTEND:
-						if (a.getMember().getJoinedStudyId() == study.getStudyId()) {
+						if (a.getMember().getJoinedStudy().getStudyId() ==
+								study.getStudyId()) {
 							attendMembers.add(memberName);
 						} else {
 							guestMembers.add(memberName);
@@ -133,7 +134,7 @@ public class ScheduleController {
 		attendanceDto.setMemberId(member.getMemberId());
 		attendanceDto.setMemberName(member.getName());
 		attendanceDto.setAttendanceCode(attendance.getAttendanceCode());
-		attendanceDto.setIsGuest(member.getJoinedStudyId() !=
+		attendanceDto.setIsGuest(member.getJoinedStudy().getStudyId() !=
 				attendance.getSchedule().getStudy().getStudyId());
 		
 		return attendanceDto;

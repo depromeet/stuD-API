@@ -11,4 +11,9 @@ public interface AttendanceRepository extends CrudRepository<Attendance, Long> {
 	public List<Attendance> findByScheduleScheduleIdIn(Iterable<Long> scheduleIds);
 	
 	public List<Attendance> findByScheduleScheduleId(Long scheduleId);
+	
+	public List<Attendance> findByMemberMemberId(Long memberId);
+	
+	public int countByMemberMemberIdAndAttendanceCode(
+			Long memberId, Long attendanceCode);
 }

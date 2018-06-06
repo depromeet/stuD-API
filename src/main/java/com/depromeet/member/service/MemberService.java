@@ -12,12 +12,22 @@ import org.springframework.stereotype.Service;
 
 import com.depromeet.member.entity.Member;
 import com.depromeet.member.repository.MemberRepository;
+import com.depromeet.schedule.entity.Study;
+import com.depromeet.schedule.enums.AttendanceCode;
+import com.depromeet.schedule.repository.AttendanceRepository;
+import com.depromeet.study.repository.StudyRepository;
 
 @Service
 public class MemberService implements UserDetailsService {
 	
 	@Autowired
 	private MemberRepository memberRepository;
+	
+	@Autowired
+	private StudyRepository studyRepository;
+	
+	@Autowired
+	private AttendanceRepository attendanceRepository;
 	
 	@Override
 	public UserDetails loadUserByUsername(String username)
@@ -47,9 +57,27 @@ public class MemberService implements UserDetailsService {
 		Member member = memberRepository.findById(memberId)
 				.orElseThrow(() -> new NoSuchElementException("회원 정보가 유효하지 않습니다."));
 		
-		if (member.getJoinedStudyId() != studyId) {
-			member.setJoinedStudyId(studyId);
+		if (member.getJoinedStudy().getStudyId() != studyId) {
+			Study study = studyRepository.findById(studyId)
+					.orElseThrow(() -> new NoSuchElementException("해당 스터디가 존재하지 않습니다."));
+			
+			member.setJoinedStudy(study);
 			memberRepository.save(member);
 		}
+	}
+	
+	public int loadAttendedCount(Long memberId) {
+		return attendanceRepository.countByMemberMemberIdAndAttendanceCode(
+				memberId, AttendanceCode.ATTEND.getCode());
+	}
+	
+	public int loadLateCount(Long memberId) {
+		return attendanceRepository.countByMemberMemberIdAndAttendanceCode(
+				memberId, AttendanceCode.LATE.getCode());
+	}
+	
+	public int loadNotAttendedCount(Long memberId) {
+		return attendanceRepository.countByMemberMemberIdAndAttendanceCode(
+				memberId, AttendanceCode.NOT_ATTEND.getCode());
 	}
 }
