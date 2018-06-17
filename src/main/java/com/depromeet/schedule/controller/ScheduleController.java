@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.depromeet.common.dto.ApiResponse;
+import com.depromeet.common.exception.UnauthorizedException;
 import com.depromeet.member.entity.Member;
 import com.depromeet.member.service.MemberService;
 import com.depromeet.schedule.dto.AttendanceDto;
@@ -79,6 +80,22 @@ public class ScheduleController {
 				attendanceDto.getAttendanceCode());
 	}
 	
+	@PostMapping("/{scheduleId}/attendance/decide")
+	@ResponseStatus(HttpStatus.OK)
+	public void decideAttendance(@PathVariable Long scheduleId,
+			@RequestBody List<AttendanceDto> attendances) {
+		
+		Member member = memberService.loadMemberByToken()
+				.orElseThrow(() -> new NoSuchElementException("회원 정보가 유효하지 않습니다."));
+		
+		Study study = scheduleService.loadStudyByScheduleId(scheduleId);
+		if (!member.isLeader(study)) {
+			throw new UnauthorizedException("권한이 없습니다.");
+		}
+		
+		scheduleService.decideAttendance(scheduleId, attendances);
+	}
+	
 	private ScheduleDto scheduleDtoFromEntity(Schedule schedule, Member member) {
 		ScheduleDto scheduleDto = new ScheduleDto();
 		Study study = schedule.getStudy();
@@ -100,7 +117,8 @@ public class ScheduleController {
 					
 					switch (a.getAttendanceCode().intValue()) {
 					case ScheduleDto.ATTEND:
-						if (a.getMember().getJoinedStudyId() == study.getStudyId()) {
+						if (a.getMember().getJoinedStudy().getStudyId() ==
+								study.getStudyId()) {
 							attendMembers.add(memberName);
 						} else {
 							guestMembers.add(memberName);
@@ -133,7 +151,7 @@ public class ScheduleController {
 		attendanceDto.setMemberId(member.getMemberId());
 		attendanceDto.setMemberName(member.getName());
 		attendanceDto.setAttendanceCode(attendance.getAttendanceCode());
-		attendanceDto.setIsGuest(member.getJoinedStudyId() !=
+		attendanceDto.setIsGuest(member.getJoinedStudy().getStudyId() !=
 				attendance.getSchedule().getStudy().getStudyId());
 		
 		return attendanceDto;

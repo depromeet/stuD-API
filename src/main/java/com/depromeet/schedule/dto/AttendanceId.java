@@ -9,6 +9,14 @@ public class AttendanceId implements Serializable {
 	private Long member;
 	private Long schedule;
 	
+	public AttendanceId() {
+	}
+	
+	public AttendanceId(Long member, Long schedule) {
+		this.member = member;
+		this.schedule = schedule;
+	}
+	
 	public Long getMember() {
 		return member;
 	}

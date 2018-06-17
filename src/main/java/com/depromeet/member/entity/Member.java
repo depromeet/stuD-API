@@ -4,13 +4,18 @@ import java.util.Collection;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.SpringSecurityCoreVersion;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import com.depromeet.schedule.entity.Study;
 
 @Entity
 public class Member implements UserDetails {
@@ -32,8 +37,16 @@ public class Member implements UserDetails {
 	@Column(name = "name", length = 5, nullable = false)
 	private String name;
 	
-	@Column(name = "joined_study_id")
-	private Long joinedStudyId;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "joined_study_id")
+	private Study joinedStudy;
+	
+	public Member() {
+	}
+	
+	public Member(Long memberId) {
+		this.memberId = memberId;
+	}
 	
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -69,6 +82,14 @@ public class Member implements UserDetails {
 	public boolean isEnabled() {
 		return true;
 	}
+	
+	public boolean isLeader(Study study) {
+		return memberId == study.getLeader().getMemberId();
+	}
+	
+	public boolean isGuest(Study study) {
+		return joinedStudy.getStudyId() != study.getStudyId();
+	}
 
 	public Long getMemberId() {
 		return memberId;
@@ -98,11 +119,11 @@ public class Member implements UserDetails {
 		this.password = password;
 	}
 	
-	public Long getJoinedStudyId() {
-		return joinedStudyId;
+	public Study getJoinedStudy() {
+		return joinedStudy;
 	}
 	
-	public void setJoinedStudyId(Long joinedStudyId) {
-		this.joinedStudyId = joinedStudyId;
+	public void setJoinedStudy(Study joinedStudy) {
+		this.joinedStudy = joinedStudy;
 	}
 }

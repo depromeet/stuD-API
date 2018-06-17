@@ -10,5 +10,5 @@ import com.depromeet.schedule.entity.Study;
 @Repository
 public interface StudyRepository extends CrudRepository<Study, Long> {
 	
-	public List<Study> findByLeaderMemberId(Long leaderId);
+	List<Study> findByLeaderMemberId(Long leaderId);
 }

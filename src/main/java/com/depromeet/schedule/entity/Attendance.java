@@ -2,7 +2,6 @@ package com.depromeet.schedule.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
@@ -21,7 +20,7 @@ public class Attendance {
 	private Member member;
 	
 	@Id
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "schedule_id", nullable = false)
 	private Schedule schedule;
 	
