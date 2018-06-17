@@ -41,6 +41,13 @@ public class Member implements UserDetails {
 	@JoinColumn(name = "joined_study_id")
 	private Study joinedStudy;
 	
+	public Member() {
+	}
+	
+	public Member(Long memberId) {
+		this.memberId = memberId;
+	}
+	
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return null;
@@ -74,6 +81,10 @@ public class Member implements UserDetails {
 	@Override
 	public boolean isEnabled() {
 		return true;
+	}
+	
+	public boolean isLeader(Study study) {
+		return memberId == study.getLeader().getMemberId();
 	}
 	
 	public boolean isGuest(Study study) {
