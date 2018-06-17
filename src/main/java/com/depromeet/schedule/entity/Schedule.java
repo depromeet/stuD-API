@@ -39,6 +39,13 @@ public class Schedule {
 	@OneToMany(mappedBy = "schedule")
 	private List<Attendance> attendance;
 	
+	public Schedule() {
+	}
+	
+	public Schedule(Long scheduleId) {
+		this.scheduleId = scheduleId;
+	}
+	
 	public Long getScheduleId() {
 		return scheduleId;
 	}
