@@ -65,6 +65,25 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>1.2.1</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>java</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<mainClass>com.depromeet.Mini2Team3Application</mainClass>
+					<arguments>
+						<argument>foo</argument>
+						<argument>bar</argument>
+					</arguments>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 </project>
